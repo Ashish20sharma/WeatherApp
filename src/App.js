@@ -2,27 +2,32 @@ import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
+  const [inputCity,SetInputCity]=useState("");
   const [city, setCity] = useState("");
   const [weatherData, setWeatherData] = useState({});
-
   useEffect(() => {
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=bce93e41f89eb673d5682b47d9d1be5c`).then((res) => res.json()).then((data) => setWeatherData(data))
   }, [city])
-  // console.log(weatherData);
+
+  const handleSearch=()=>{
+    setCity(inputCity);
+    SetInputCity('');
+  }
   return (
-    <body>
-      <div class="container">
+    <div className='main'>
+      <div className="container">
         <h1>Weather App</h1>
-        <input type="text" id="locationInput" placeholder="Enter a city" />
-        <button id="searchButton">Search</button>
-        <div class="weather-info">
-          <h2 id="location">Jaipur</h2>
-          <p id="temperature">33</p>
-          <p id="description">hahhhah</p>
+        <input onInput={(e)=>SetInputCity(e.target.value)} value={inputCity} ontype="text" id="locationInput" placeholder="Enter a city" />
+        <button onClick={()=>handleSearch()} id="searchButton">Search</button>
+        <div className="weather-info">
+          {weatherData.cod===200?<><h2 id="location">{weatherData.name}</h2>
+          <p id="temperature">{Math.round(weatherData.main.temp-273)} <sup>o</sup>C</p>
+          <p id="description">{weatherData.weather[0].main}</p></>:"Input the City name"}
         </div>
       </div>
-    </body>
+    </div>
   );
 }
+
 
 export default App;
